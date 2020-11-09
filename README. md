@@ -1,0 +1,12 @@
+# Dataiku Data Science Technical Assessment - US Census
+Uses machine learning on census data to be able to identify, predict, and further understand the characteristics that are associated with someone making more or less than $50,000 dollars per year.
+
+## Data
+* US census dataset 
+* 199,523 pieces of training data
+* 99,761 pieces of test data
+* 42 features per row 
+* TODO write how many categorical feautres, how many numeric features, continuous, etc
+(continuous : 7 nominal : 33)
+
+# TODO write all about exploratory, tec
