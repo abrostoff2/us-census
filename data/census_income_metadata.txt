@@ -40,7 +40,7 @@
 | full or part time employment stat		AWKSTAT
 | capital gains					CAPGAIN
 | capital losses				CAPLOSS
-| divdends from stocks				DIVVAL
+| divdends from stocks				DIVVAL∂
 | federal income tax liability			FEDTAX
 | tax filer status				FILESTAT
 | region of previous residence			GRINREG
@@ -158,7 +158,7 @@ reason for unemployment: Not in universe, Re-entrant, Job loser - on layoff, New
 full or part time employment stat: Children or Armed Forces, Full-time schedules, Unemployed part- time, Not in labor force, Unemployed full-time, PT for non-econ reasons usually FT, PT for econ reasons usually PT, PT for econ reasons usually FT.
 capital gains: continuous.
 capital losses: continuous.
-dividends from stocks: continuous.
+dividends from stocks: continuous.family
 tax filer stat: Nonfiler, Joint one under 65 & one 65+, Joint both under 65, Single, Head of household, Joint both 65+.
 region of previous residence: Not in universe, South, Northeast, West, Midwest, Abroad.
 state of previous residence: Not in universe, Utah, Michigan, North Carolina, North Dakota, Virginia, Vermont, Wyoming, West Virginia, Pennsylvania, Abroad, Oregon, California, Iowa, Florida, Arkansas, Texas, South Carolina, Arizona, Indiana, Tennessee, Maine, Alaska, Ohio, Montana, Nebraska, Mississippi, District of Columbia, Minnesota, Illinois, Kentucky, Delaware, Colorado, Maryland, Wisconsin, New Hampshire, Nevada, New York, Georgia, Oklahoma, New Mexico, South Dakota, Missouri, Kansas, Connecticut, Louisiana, Alabama, Massachusetts, Idaho, New Jersey.
