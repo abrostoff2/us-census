@@ -5,10 +5,11 @@ nbs
 *.mp3
 *.wav
 data/
+nbs/preprocessing-notes.ipynb
 
 # Distribution / packaging
 */data/*
-**/.ipynb_checkpoints/*
+**/.ipynb_checkpoints/**
 
 *.csv
 */pretrained_models/*
@@ -37,9 +38,10 @@ sdist/
 var/
 wheels/
 share/python-wheels/
+/ipynb_checkpoints
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
-.DS_Store
+/.DS_Store
 **/.idea/*
