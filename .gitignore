@@ -1,11 +1,13 @@
 build/*
 __pycache__/
-nbs
 *.mp4
 *.mp3
 *.wav
 data/
+**/.DS_Store
 nbs/preprocessing-notes.ipynb
+nbs/catboost/**
+nbs/catboost_info/**
 
 # Distribution / packaging
 */data/*
