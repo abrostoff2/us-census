@@ -207,6 +207,12 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 ### One Hot Encoding
 * need to do this because I want to do tree based model.
 
+### Post Preprocessing Visualizations
+
+* Notice education very important 
+* working 52 weeks a year is very densely populated (looking at pairplot) for people who make over 50k
+* The population who  make over 50k is more dense at the median (45) compared to those who make less than 50k
+
 
 
 # Modeling: Choosing a model
@@ -219,3 +225,6 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 * Bagging technique seems to be more fitting with our data, but will try both
   * didn't get great results with random forest, as the precision for the minority class (now balanced) was quite low
   * Trying cat boost - fitting for our data because it works especially well for categorical features - gradient boosting (boosting technique)
+
+## Explaining Models and Feature Importance using Shap and Lime
+

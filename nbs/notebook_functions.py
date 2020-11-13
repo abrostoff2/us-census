@@ -81,13 +81,13 @@ def ignore_features():
     ignore_features = ignore_features + ['instance weight', 'capital gains', 
                 'capital losses', 'dividends from stocks']
 
-    
 
 class Preprocess:
     def __init__ (self, data, is_training):
         self.data = data 
         self.is_training = is_training
         
+
     def setup_data(self):
         with open('/Users/alexbrostoff/us-census/data/census_income_metadata.txt', 'r') as in_file:
             stripped = (line.strip() for line in in_file)
@@ -116,12 +116,14 @@ class Preprocess:
         self.continuous_features = list(self.data_types_df[self.data_types_df['feature_type']=='continuous'].feature)       
         self.nominal_features = list(self.data_types_df[self.data_types_df['feature_type']=='nominal'].feature)       
 
+
     def remove_wealth_features(self):
         self.features_to_drop = ['instance_weight', 'wage_per_hour',
                                                   'capital_gains', 'capital_losses',
                                                   'dividends_from_stocks']
         self.data = self.data.drop(self.features_to_drop, axis=1)
     
+
     def remove_nulls_and_duplicates(self):
         data = self.data.replace({' ?': np.nan}, inplace=True)
         data = self.data.replace({'?': np.nan}, inplace=True)
@@ -135,11 +137,13 @@ class Preprocess:
         self.data = self.data.loc[self.data.detailed_household_summary_in_household=='Householder']
         self.data[self.data.age>18] #only adults
 
+
     def create_race_and_hispanic(self):
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: 'Mexican' if x in ('Mexican (Mexicano)', 'Mexican-American', 'Chicano') else x)
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: 'Central or South American' if x in ('Puerto Rican','Cuban') else x)
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: np.nan if x in ('All other','NA', 'Do not know') else x)
         self.data['race_and_hispanic'] = self.data.apply(lambda x: (x['race'], x['hispanic_origin']), axis=1)
+
 
     def make_education_ordinal(self):
         edu_dict = {'Children': 0,
@@ -180,16 +184,6 @@ class Preprocess:
         majority_data = sampled_data[sampled_data.income=='- 50000.'].iloc[:self.data.income.value_counts()[1]]
         minority_data = sampled_data[sampled_data.income=='50000+.']
         self.data = pd.concat([majority_data, minority_data])
-    
-    def get_dummies(self):
-        features = ['age', 'detailed_industry_recode', 'detailed_occupation_recode', 'education', 'marital_stat', 'sex',
-        'tax_filer_stat', 
-       'num_persons_worked_for_employer',  'citizenship',
-       'own_business_or_self_employed',
-       'weeks_worked_in_year',  'race_and_hispanic',
-        'immigrant_score']
-        self.X = pd.get_dummies(self.data[features])
-        self.y = self.data['income']
 
 
     def preprocess(self):
@@ -202,6 +196,5 @@ class Preprocess:
         self.get_country_index_scores()
         if self.is_training:
             self.balance_data()
-        self.get_dummies()
 
         
