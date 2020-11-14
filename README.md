@@ -3,6 +3,7 @@
 * Do I have the right data for it?
 
 <div class="alert alert-warning"><b>NOTE:</b> we are looking at characteristics that are associated with a PERSON making more or less than 50,000 dollars a year. 
+
 ### From census website: Some ways data is used:
 
 * provide services for elderly
