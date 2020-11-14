@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import re
 from itertools import product 
+from sklearn import preprocessing
+
 
 def display_group_density_plot(df, groupby, on, palette, figsize):
     """
@@ -15,46 +17,34 @@ def display_group_density_plot(df, groupby, on, palette, figsize):
     :param figsize: Figure size
     :return: matplotlib.axes._subplots.AxesSubplot object
     """
-
     if not isinstance(df, pd.core.frame.DataFrame):
         raise ValueError('df must be a pandas DataFrame')
-
     if not groupby:
         raise ValueError('groupby parameter must be provided')
-
     elif not groupby in df.keys():
         raise ValueError(groupby + ' column does not exist in the given DataFrame')
-
     if not on:
         raise ValueError('on parameter must be provided')
-
     elif not on in df.keys():
         raise ValueError(on + ' column does not exist in the given DataFrame')
-
     if len(set(df[groupby])) > 10:
         groups = df[groupby].value_counts().index[:10]
-
     else:
         groups = set(df[groupby])
-
     # Get relevant palette
     if palette:
         palette = palette[:len(groups)]
     else:
         palette = sns.color_palette()[:len(groups)]
-
     # Plot
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(111)
     ax.legend(bbox_to_anchor=(1.04, 1), loc='upper left')
-
     for value, color in zip(groups, palette):
         sns.kdeplot(df.loc[df[groupby] == value][on], \
                     shade=True, color=color, label=value)
-
     ax.set_title(str("Distribution of " + on + " per " + groupby + " group"),\
                  fontsize=30)
-    
     ax.set_xlabel(on, fontsize=20)
     return ax
 
@@ -63,32 +53,13 @@ def get_percentage_stats(df, feature):
     return (df[feature].value_counts()/df.shape[0])
 
 
-def ignore_features():
-    ignore_features = []
-    for feature in train.columns:
-        data = train.dropna(subset=[feature])
-        display(data[feature])
-        feature_counts = get_percentage_stats(data, feature)
-        if type(feature_counts.index[0])==str:
-            if ' '.join(feature_counts.index[0].split(' ')[:4]) == ' Not in universe' or feature_counts.index[0]==' ?':
-                    if feature_counts[0]>.5:
-                        ignore_features.append(feature)
-        else:
-            if feature_counts.index[0]==0:
-                if feature_counts[0]>.5:
-                        ignore_features.append(feature)
-
-    ignore_features = ignore_features + ['instance weight', 'capital gains', 
-                'capital losses', 'dividends from stocks']
-
-
-class Preprocess:
+class Process:
     def __init__ (self, data, is_training):
-        self.data = data 
-        self.is_training = is_training
-        
+        self.is_training = is_training 
+        self.data = data
 
-    def setup_data(self):
+
+    def add_headers_and_clean(self):
         with open('/Users/alexbrostoff/us-census/data/census_income_metadata.txt', 'r') as in_file:
             stripped = (line.strip() for line in in_file)
             lines = in_file.read()
@@ -106,15 +77,24 @@ class Preprocess:
         underscore_features =[feature.replace(' ', '_') for feature in self.data.columns]
         self.data.columns=underscore_features
         
-        self.data_types_df = pd.DataFrame(re.findall(r'#\d{1,3} \(([^\)]+)\) (.+)', lines), 
+        data_types_df = pd.DataFrame(re.findall(r'#\d{1,3} \(([^\)]+)\) (.+)', lines), 
                              columns=['feature', 'feature_type'])
-        self.data_types_df['feature'] = self.data_types_df['feature'].apply(lambda x: x.replace(' ', '_'))
+        data_types_df['feature'] = data_types_df['feature'].apply(lambda x: x.replace(' ', '_'))
 
-        self.grouped_data_types_df = self.data_types_df.groupby(['feature_type', 'feature']).count()
+        self.grouped_data_types_df = data_types_df.groupby(['feature_type', 'feature']).count()
         self.features = features
 
-        self.continuous_features = list(self.data_types_df[self.data_types_df['feature_type']=='continuous'].feature)       
-        self.nominal_features = list(self.data_types_df[self.data_types_df['feature_type']=='nominal'].feature)       
+        self.continuous_features = list(data_types_df[data_types_df['feature_type']=='continuous'].feature)       
+        self.nominal_features = list(data_types_df[data_types_df['feature_type']=='nominal'].feature)    
+        self.data_types_df = data_types_df  
+
+
+    def encode_labels(self):
+        data = self.data
+        le = preprocessing.LabelEncoder()
+        le.fit(data['income'])
+        data['income'] = le.transform(data['income'])
+        self.data = data
 
 
     def remove_wealth_features(self):
@@ -138,11 +118,11 @@ class Preprocess:
         self.data[self.data.age>18] #only adults
 
 
-    def create_race_and_hispanic(self):
+    def aggregate_hispanic(self):
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: 'Mexican' if x in ('Mexican (Mexicano)', 'Mexican-American', 'Chicano') else x)
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: 'Central or South American' if x in ('Puerto Rican','Cuban') else x)
         self.data['hispanic_origin'] = self.data.hispanic_origin.apply(lambda x: np.nan if x in ('All other','NA', 'Do not know') else x)
-        self.data['race_and_hispanic'] = self.data.apply(lambda x: (x['race'], x['hispanic_origin']), axis=1)
+        # self.data['race_and_hispanic'] = self.data.apply(lambda x: (x['race'], x['hispanic_origin']), axis=1)
 
 
     def make_education_ordinal(self):
@@ -181,17 +161,18 @@ class Preprocess:
 
     def balance_data(self):
         sampled_data = self.data.sample(frac=1)
-        majority_data = sampled_data[sampled_data.income=='- 50000.'].iloc[:self.data.income.value_counts()[1]]
-        minority_data = sampled_data[sampled_data.income=='50000+.']
+        majority_data = sampled_data[sampled_data.income==0].iloc[:self.data.income.value_counts()[1]]
+        minority_data = sampled_data[sampled_data.income==1]
         self.data = pd.concat([majority_data, minority_data])
 
 
-    def preprocess(self):
-        self.setup_data()
+    def fit(self):
+        self.add_headers_and_clean()
+        self.encode_labels()
         self.remove_wealth_features()
         self.remove_nulls_and_duplicates()
         self.keep_heads_of_households()
-        self.create_race_and_hispanic()
+        self.aggregate_hispanic()
         self.make_education_ordinal()
         self.get_country_index_scores()
         if self.is_training:

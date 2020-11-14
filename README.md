@@ -2,13 +2,7 @@
 * what do I want to predict?
 * Do I have the right data for it?
 
-## From promt: 
-
-* we are looking at characteristics that are associated with a PERSON making more or less than 50,000 dollars a year
-* collection of information helps examine the demographic characteristics of subpopulations across the country
-
-
-
+<div class="alert alert-warning"><b>NOTE:</b> we are looking at characteristics that are associated with a PERSON making more or less than 50,000 dollars a year. 
 ### From census website: Some ways data is used:
 
 * provide services for elderly
@@ -22,9 +16,7 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 1. What types of people are disadvantaged when it comes to earning money
 2. What actions/paths can people take to make their earning outcomes more promisable 
 
-**Goal is to be explainable**
-
-
+<div class="alert alert-warning"><b>NOTE:</b> We want to be explainable</div>
 
 # Business Assumptions
 
@@ -34,24 +26,21 @@ For this use case, I decided I wanted to investigate factors relevant to the per
     * hourly wage - or if they have hourly wage or not 
     * amount of taxes paid
 
-
-
 # Load Data
 
 * Load data
 * Load columns
 
-
-
 # EDA
+
+<div class="alert alert-warning"><b>NOTE:</b> A lot of my charts are made with plotly, so you cannot see them in display mode, but you can clone the repository, and run the notebooks to interact with these plots. 
+</div>
 
 * Quantitative methods of EDA to understand and summarize a dataset, without making any assumptions about what it contains.
 
 * visualizations and tests can be used to help understand what the data looks like, 
 
 * getting familiar with the data, so you can figure out what assumptions you can make that best work with the data and your business problem. After EDA, you can make those assumptions, and then use feature engineering and preprocessing to transform your data to be able to fit those needed assumptions if possible. For example, saying we are assuming balanced data, that doesn't mean that the data is balanced, it just means that the data has the ability to become balanced when using different preprocessing techniques. 
-
-
 
 ## Steps
 
@@ -72,8 +61,6 @@ For this use case, I decided I wanted to investigate factors relevant to the per
   * What is Not in Universe? [^1]
 
 [^1]: Not  In Universe is a little different from ? because it could be the case that the question doesn't apply to them, but it could also be that they didn't answer the question. If the question didn't apply to them, we could gain some extra value from this *Not in Universe* feature, as the fact that a question doesn't apply to them could give you some indication about the individual. Also, if it just meant that they didn't answer the question, we could gain value from this as well, as there could potentially be a correlation between the number of optional questions someone fills out and their income status. But because we don't know in which case which scenario was present, we will treat these like Nans
-
-
 
 ### 6. Identifying the number of empty cells by features or columns
 
@@ -101,8 +88,6 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 ### 11. Collinarity
 
 * number of people who work for employer and the weeks worked in year are highly positively correlated. This means that although when the value of one goes up, the value of teh other will likely increase. That being said, we can't assume one of these factors causes the other (for instance, working at a bigger company means you work more hours), as there could be an external (or multiple) factors that cause this relationship (for instance, people who work at bigger companies tend to be full time employees (not saying this is true, just an example))
-
-
 
 
 ## Additional Questions/Observations from EDA
@@ -138,8 +123,6 @@ For this use case, I decided I wanted to investigate factors relevant to the per
   
     * Follows a distribution that makes sense for age
   
-
-
 
 
 ## Assumptions To Make:
@@ -213,8 +196,6 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 * working 52 weeks a year is very densely populated (looking at pairplot) for people who make over 50k
 * The population who  make over 50k is more dense at the median (45) compared to those who make less than 50k
 
-
-
 # Modeling: Choosing a model
 
 * want the model to perform well, but also be interpretable so that we can understand the features, their importance, how they interact, and how they help determine annual income - don't want to use an unexplainable model like a neural network - want to keep it simple
@@ -225,6 +206,17 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 * Bagging technique seems to be more fitting with our data, but will try both
   * didn't get great results with random forest, as the precision for the minority class (now balanced) was quite low
   * Trying cat boost - fitting for our data because it works especially well for categorical features - gradient boosting (boosting technique)
+  
+  <div class="alert alert-warning"><b>IMPORTANT:</b> We want to be explainable</div>
 
-## Explaining Models and Feature Importance using Shap and Lime
+## Tuning My Model
 
+* Cross Validation
+
+* using train, validation, and test set
+
+## Plotting Feature Importance
+
+* Show Feature importance - and the correlations between these important features and our label
+* Show tree based model - just showing a shallow tree for vizualization purposes
+* You can thus see the most importance features to income through the graph, and can see that feature's correlation to our label to understand how that feature impacts income.
