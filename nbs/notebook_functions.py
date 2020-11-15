@@ -53,6 +53,19 @@ def get_percentage_stats(df, feature):
     return (df[feature].value_counts()/df.shape[0])
 
 
+def group_lower_ranking_values(df, column):
+    rating_counts = df.groupby(column).agg('count')
+    pct_value = rating_counts[lambda x: x.columns[0]].quantile(.5)
+    values_below_pct_value = rating_counts[lambda x: x.columns[0]].loc[lambda s: s < pct_value].index.values
+    def fix_values(row):
+        if row[column] in values_below_pct_value:
+            row[column] = 'Other'
+        return row 
+    rating_grouped = df.apply(fix_values, axis=1)
+    return rating_grouped
+
+
+
 class Process:
     def __init__ (self, data, is_training):
         self.is_training = is_training 
@@ -177,5 +190,6 @@ class Process:
         self.get_country_index_scores()
         if self.is_training:
             self.balance_data()
+
 
         
