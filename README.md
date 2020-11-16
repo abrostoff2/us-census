@@ -27,3 +27,7 @@ For this use case, I decided I wanted to investigate factors relevant to the per
 * working under the assumption that the working definition of characteristics is a feature that is not obviously related to income, such as: 
     * hourly wage - or if they have hourly wage or not 
     * amount of taxes paid
+
+<div class="alert alert-info"><b>NOTE:</b> I wanted to display as little code as possible on the notebooks to be as interpretable to everyone, regardless our their techincal knowledge. Because of this, I added a python file in the nbs folders called notebook_functions.py that has all the more technical coding. Please refer to this file if you are interested in learning how I used Python to solve this challenge. 
+</div>
+
