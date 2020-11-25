@@ -3,17 +3,14 @@ __pycache__/
 *.mp4
 *.mp3
 *.wav
-data/
 **/.DS_Store
 nbs/preprocessing-notes.ipynb
 nbs/catboost/**
 nbs/catboost_info/**
 
 # Distribution / packaging
-*/data/*
 **/.ipynb_checkpoints/**
 
-*.csv
 */pretrained_models/*
 # Byte-compiled / optimized / DLL files
 *.py[cod]
